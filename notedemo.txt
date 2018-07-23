@@ -1,0 +1,108 @@
+import java.awt.event.*;
+import java.io.*;
+import java.awt.*;
+public class NoteDemo {
+    private File file;
+    private Frame f;
+    private MenuBar bar;
+    private TextArea ta;
+    private Menu fileMenu;
+    private MenuItem openItem,saveItem,closeItem;
+
+    private FileDialog openDia,saveDia;
+
+    NoteDemo(){
+        init();
+    }
+
+    public void init(){
+        f = new Frame("my window");
+        f.setBounds(300,100,650,600);
+
+        bar = new MenuBar();
+
+        ta = new TextArea();
+        f.add(ta);
+
+        fileMenu = new Menu("Menu");
+
+        openItem = new MenuItem("open");
+        saveItem = new MenuItem("save");
+        closeItem = new MenuItem("close");
+
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.add(closeItem);
+        bar.add(fileMenu);
+
+        f.setMenuBar(bar);
+
+        openDia = new FileDialog(f,"open",FileDialog.LOAD);
+        saveDia = new FileDialog(f,"save",FileDialog.SAVE);
+
+        f.setVisible(true);
+
+        myEvent();
+    }
+
+    private void myEvent(){
+        openItem.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                openDia.setVisible(true);
+                String dirPath = openDia.getDirectory();
+                String fileName = openDia.getFile();
+                if(fileName == null || dirPath == null)
+                    return ;
+                ta.setText("");
+                file = new File(dirPath,fileName);
+                try{
+                    BufferedReader buf = new BufferedReader(new FileReader(file));
+                    String line = null;
+                    while((line = buf.readLine())!= null){
+                        ta.append(line+"\r\n");
+                    }
+                    buf.close();
+                }
+                catch(IOException ex){
+                    throw new RuntimeException();
+                }
+            }
+        });
+        saveItem.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                if(file == null) {
+                    saveDia.setVisible(true);
+                    String dirPath = saveDia.getDirectory();
+                    String fileName = saveDia.getFile();
+                    if (fileName == null || dirPath == null)
+                        return;
+                    file = new File(dirPath, fileName);
+                }
+                try{
+                    String text = ta.getText();
+                    BufferedWriter bufw = new BufferedWriter(new FileWriter(file));
+                    String line = null;
+                    bufw.write(text);
+                    bufw.close();
+                }
+                catch(IOException ex){
+                    throw new RuntimeException();
+                }
+            }
+        });
+        closeItem.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                System.exit(0);
+            }
+        });
+        f.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+                System.exit(0);
+            }
+        });
+    }
+
+    public static void main(String[] args){
+        new NoteDemo();
+}
+}

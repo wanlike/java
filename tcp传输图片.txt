@@ -1,0 +1,67 @@
+import java.io.*;
+import java.net.*;
+public class PicClient {
+    public static void main(String[] args)throws Exception{
+        Socket s = new Socket(InetAddress.getLocalHost(),10004);
+
+        FileInputStream fis = new FileInputStream("D:\\IPDemo\\src\\1.png");
+        OutputStream os = s.getOutputStream();
+        BufferedReader bufr = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        byte[] buf = new byte[1024];
+        int len = 0;
+        while((len = fis.read(buf))!=-1){
+            os.write(buf,0,len);
+            os.flush();
+        }
+        s.shutdownOutput();
+        System.out.println(bufr.readLine());
+        s.close();
+        fis.close();
+    }
+}
+
+
+
+import java.io.*;
+import java.net.*;
+public class Picserver1 implements Runnable{
+    private Socket s;
+    Picserver1(Socket s){
+        this.s = s;
+    }
+    public void run(){
+        int count = 0;
+        try{
+            String ip = s.getInetAddress().getHostAddress();
+            System.out.println(ip+".....connected");
+            InputStream is = s.getInputStream();
+            File f = new File("D:\\IPDemo\\src",ip+"("+(count++)+")"+".png");
+            while(f.exists())
+                f = new File("D:\\IPDemo\\src",ip+"("+(count++)+")"+".png");
+            FileOutputStream os = new FileOutputStream(f);
+            BufferedWriter bufr = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+            byte[] buf = new byte[1024];
+            int len = 0;
+            while((len = is.read(buf))!=-1){
+                os.write(buf,0,len);
+                os.flush();
+            }
+            String str = new String("got is");
+            bufr.write(str);
+            bufr.flush();
+            s.close();
+            is.close();
+            os.close();
+        }
+        catch(Exception e){
+            throw new RuntimeException("error");
+        }
+    }
+    public static void main(String[] args)throws Exception{
+        ServerSocket ss = new ServerSocket(10004);
+        while(true){
+            Socket s = ss.accept();
+            new Thread(new Picserver1(s)).start();
+        }
+    }
+}

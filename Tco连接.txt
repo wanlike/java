@@ -1,0 +1,50 @@
+import java.io.*;
+import java.net.*;
+public class Tcpserver1 {
+    public static void main(String[] args)throws Exception{
+        ServerSocket ss = new ServerSocket(10003);
+        Socket s = ss.accept();
+        String ip = s.getInetAddress().getHostAddress();
+        System.out.println(ip+".....connetted");
+        BufferedReader bufr =
+                new BufferedReader(new InputStreamReader(s.getInputStream()));
+        BufferedWriter bufw =
+                new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+        byte[] buf = new byte[1024];
+        String line = null;
+        while((line = bufr.readLine())!= null){
+            String str = line.toUpperCase();
+            bufw.write(str);
+            bufw.newLine();
+            bufw.flush();
+        }
+    }
+}
+
+
+
+
+
+import java.io.*;
+import java.net.*;
+public class Tcoclint1 {
+    public static void main(String[] args)throws Exception{
+        Socket s = new Socket(InetAddress.getLocalHost(),10003);
+        BufferedWriter bufw =
+                new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+        BufferedReader bufrout =
+                new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader bufrin =
+                new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String line = null;
+        while((line = bufrout.readLine())!= null){
+            bufw.write(line);
+            bufw.newLine();
+            bufw.flush();
+            while((line = bufrin.readLine())!=null){
+                System.out.println("server:"+line);
+            }
+        }
+
+    }
+}
