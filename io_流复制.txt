@@ -1,0 +1,42 @@
+import java.io.*;
+
+public class FileReaderDemo {
+    public static void main(String[] args)throws IOException{
+        copy_1();
+    }
+
+    public static void copy_1()throws IOException{
+        BufferedWriter bufw = null;
+        BufferedReader bufr = null;
+        try{
+            bufr = new BufferedReader(new FileReader("demo.txt"));
+            bufw = new BufferedWriter(new FileWriter("hh.txt"));
+            String line = null;
+            while((line = bufr.readLine())!= null){
+                bufw.write(line);
+                bufw.newLine();
+                bufw.flush();
+            }
+        }
+        catch (IOException e){
+            throw new RuntimeException("∂¡–¥ ß∞‹");
+        }
+        finally{
+            try {
+                if (bufr == null) {
+                    bufr.close();
+                }
+            }
+            catch(IOException e){
+                throw new RuntimeException("–¥»Îπÿ±’ ß∞‹");
+            }
+            try {
+                if (bufw == null)
+                    bufw.close();
+            }
+            catch(IOException e){
+                throw new RuntimeException("∂¡»°πÿ±’ ß∞‹");
+            }
+        }
+    }
+}

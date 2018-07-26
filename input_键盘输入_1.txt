@@ -1,0 +1,15 @@
+import java.io.*;
+public class Input_1 {
+    public static void main(String[] args)throws IOException{
+        InputStream in = System.in;
+        InputStreamReader isr = new InputStreamReader(in);
+        BufferedReader bur = new BufferedReader(isr);
+
+        String line = null;
+        while((line = bur.readLine())!= null){
+            if("over".equals(line))
+                break;
+            System.out.println(line);
+        }
+    }
+}

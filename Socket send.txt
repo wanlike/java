@@ -1,0 +1,12 @@
+import java.net.*;
+import java.io.*;
+public class SocketDemo {
+    public static void main(String[] args)throws Exception{
+        DatagramSocket ds = new DatagramSocket();
+        byte[] buf = "abcd".getBytes();
+        InetAddress id = InetAddress.getLocalHost();
+        DatagramPacket dp = new DatagramPacket(buf,buf.length,id,10000);
+        ds.send(dp);
+        ds.close();
+    }
+}

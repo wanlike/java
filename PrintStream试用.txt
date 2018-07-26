@@ -1,0 +1,19 @@
+import java.io.*;
+import java.util.*;
+public class PrintStreamDemo {
+    public static void main(String[] args)throws IOException{
+        BufferedReader bufr =
+                new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+
+        String line = null;
+        while((line = bufr.readLine())!=null){
+            if("over".equals(line))
+                break;
+            pw.println(line);
+            pw.flush();
+        }
+        pw.close();
+        bufr.close();
+    }
+}
